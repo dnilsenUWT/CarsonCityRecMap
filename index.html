@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        #map {
+            width: 1064px;
+            height: 907px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/City_Parks_and_Sporting_Complexes_1.js"></script>
+        <script src="data/Trails_and_Bikeways_2.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[39.05898388319089,-119.87944526012227],[39.26646892705196,-119.63596557329303]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        var layer_OpenStreetMap_0 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OpenStreetMap_0;
+        map.addLayer(layer_OpenStreetMap_0);
+        function pop_City_Parks_and_Sporting_Complexes_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">PARK_NAME</th>\
+                        <td>' + (feature.properties['PARK_NAME'] !== null ? Autolinker.link(feature.properties['PARK_NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CATEGORY</th>\
+                        <td>' + (feature.properties['CATEGORY'] !== null ? Autolinker.link(feature.properties['CATEGORY'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_City_Parks_and_Sporting_Complexes_1_0(feature) {
+            switch(String(feature.properties['CATEGORY'])) {
+                case 'CEMETERY':
+                    return {
+                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                opacity: 1,
+                color: 'rgba(38,89,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,251,255,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'GOLF':
+                    return {
+                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                opacity: 1,
+                color: 'rgba(38,89,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(216,231,245,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'OPEN SPACE':
+                    return {
+                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                opacity: 1,
+                color: 'rgba(38,89,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(176,210,232,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'PARK':
+                    return {
+                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                opacity: 1,
+                color: 'rgba(38,89,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(115,179,216,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SNPLMA':
+                    return {
+                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                opacity: 1,
+                color: 'rgba(38,89,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(62,142,196,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SPORT':
+                    return {
+                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                opacity: 1,
+                color: 'rgba(38,89,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(21,99,170,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                opacity: 1,
+                color: 'rgba(38,89,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(8,48,107,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_City_Parks_and_Sporting_Complexes_1');
+        map.getPane('pane_City_Parks_and_Sporting_Complexes_1').style.zIndex = 401;
+        map.getPane('pane_City_Parks_and_Sporting_Complexes_1').style['mix-blend-mode'] = 'normal';
+        var layer_City_Parks_and_Sporting_Complexes_1 = new L.geoJson(json_City_Parks_and_Sporting_Complexes_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_City_Parks_and_Sporting_Complexes_1',
+            layerName: 'layer_City_Parks_and_Sporting_Complexes_1',
+            pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+            onEachFeature: pop_City_Parks_and_Sporting_Complexes_1,
+            style: style_City_Parks_and_Sporting_Complexes_1_0,
+        });
+        bounds_group.addLayer(layer_City_Parks_and_Sporting_Complexes_1);
+        map.addLayer(layer_City_Parks_and_Sporting_Complexes_1);
+        function pop_Trails_and_Bikeways_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Trail_Name</th>\
+                        <td>' + (feature.properties['Trail_Name'] !== null ? Autolinker.link(feature.properties['Trail_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Trail_Use</th>\
+                        <td>' + (feature.properties['Trail_Use'] !== null ? Autolinker.link(feature.properties['Trail_Use'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Difficulty</th>\
+                        <td>' + (feature.properties['Difficulty'] !== null ? Autolinker.link(feature.properties['Difficulty'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Trail_Type'] !== null ? Autolinker.link(feature.properties['Trail_Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Trails_and_Bikeways_2_0(feature) {
+            switch(String(feature.properties['Difficulty'])) {
+                case 'EASIEST':
+                    return {
+                pane: 'pane_Trails_and_Bikeways_2',
+                opacity: 1,
+                color: 'rgba(253,212,158,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'EASY':
+                    return {
+                pane: 'pane_Trails_and_Bikeways_2',
+                opacity: 1,
+                color: 'rgba(241,177,132,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'EXRTEMELY DIFFICULT':
+                    return {
+                pane: 'pane_Trails_and_Bikeways_2',
+                opacity: 1,
+                color: 'rgba(229,141,105,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'EXTREMELY DIFFICULT':
+                    return {
+                pane: 'pane_Trails_and_Bikeways_2',
+                opacity: 1,
+                color: 'rgba(216,106,79,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'MORE DIFFICULT':
+                    return {
+                pane: 'pane_Trails_and_Bikeways_2',
+                opacity: 1,
+                color: 'rgba(204,70,52,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'VERY DIFFICULT':
+                    return {
+                pane: 'pane_Trails_and_Bikeways_2',
+                opacity: 1,
+                color: 'rgba(192,35,26,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Trails_and_Bikeways_2',
+                opacity: 1,
+                color: 'rgba(179,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Trails_and_Bikeways_2');
+        map.getPane('pane_Trails_and_Bikeways_2').style.zIndex = 402;
+        map.getPane('pane_Trails_and_Bikeways_2').style['mix-blend-mode'] = 'normal';
+        var layer_Trails_and_Bikeways_2 = new L.geoJson(json_Trails_and_Bikeways_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Trails_and_Bikeways_2',
+            layerName: 'layer_Trails_and_Bikeways_2',
+            pane: 'pane_Trails_and_Bikeways_2',
+            onEachFeature: pop_Trails_and_Bikeways_2,
+            style: style_Trails_and_Bikeways_2_0,
+        });
+        bounds_group.addLayer(layer_Trails_and_Bikeways_2);
+        map.addLayer(layer_Trails_and_Bikeways_2);
+        setBounds();
+        </script>
+    </body>
+</html>
