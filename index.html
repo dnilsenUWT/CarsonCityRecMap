@@ -9,12 +9,14 @@
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
         <style>
-        #map {
-            width: 1064px;
-            height: 907px;
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
         }
         </style>
-        <title></title>
+        <title>Carson City Recreation Map</title>
     </head>
     <body>
         <div id="map">
@@ -28,16 +30,35 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
-        <script src="data/City_Parks_and_Sporting_Complexes_1.js"></script>
-        <script src="data/Trails_and_Bikeways_2.js"></script>
+        <script src="data/RecreationAreas_1.js"></script>
+        <script src="data/TrailsandBikeways_2.js"></script>
         <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[39.05898388319089,-119.87944526012227],[39.26646892705196,-119.63596557329303]]);
+        })
         var hash = new L.Hash(map);
-        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>; <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>');
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
         }
         var layer_OpenStreetMap_0 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             opacity: 1.0,
@@ -49,7 +70,22 @@
         });
         layer_OpenStreetMap_0;
         map.addLayer(layer_OpenStreetMap_0);
-        function pop_City_Parks_and_Sporting_Complexes_1(feature, layer) {
+        function pop_RecreationAreas_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">PARK_NAME</th>\
@@ -63,32 +99,17 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_City_Parks_and_Sporting_Complexes_1_0(feature) {
+        function style_RecreationAreas_1_0(feature) {
             switch(String(feature.properties['CATEGORY'])) {
-                case 'CEMETERY':
-                    return {
-                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
-                opacity: 1,
-                color: 'rgba(38,89,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(247,251,255,1.0)',
-                interactive: true,
-            }
-                    break;
                 case 'GOLF':
                     return {
-                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                pane: 'pane_RecreationAreas_1',
                 opacity: 1,
                 color: 'rgba(38,89,128,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 1.0, 
+                weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(216,231,245,1.0)',
@@ -97,13 +118,13 @@
                     break;
                 case 'OPEN SPACE':
                     return {
-                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                pane: 'pane_RecreationAreas_1',
                 opacity: 1,
                 color: 'rgba(38,89,128,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 1.0, 
+                weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(176,210,232,1.0)',
@@ -112,13 +133,13 @@
                     break;
                 case 'PARK':
                     return {
-                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                pane: 'pane_RecreationAreas_1',
                 opacity: 1,
                 color: 'rgba(38,89,128,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 1.0, 
+                weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(115,179,216,1.0)',
@@ -127,13 +148,13 @@
                     break;
                 case 'SNPLMA':
                     return {
-                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                pane: 'pane_RecreationAreas_1',
                 opacity: 1,
                 color: 'rgba(38,89,128,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 1.0, 
+                weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(62,142,196,1.0)',
@@ -142,51 +163,51 @@
                     break;
                 case 'SPORT':
                     return {
-                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
+                pane: 'pane_RecreationAreas_1',
                 opacity: 1,
                 color: 'rgba(38,89,128,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 1.0, 
+                weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(21,99,170,1.0)',
                 interactive: true,
             }
                     break;
-                default:
-                    return {
-                pane: 'pane_City_Parks_and_Sporting_Complexes_1',
-                opacity: 1,
-                color: 'rgba(38,89,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(8,48,107,1.0)',
-                interactive: true,
-            }
-                    break;
             }
         }
-        map.createPane('pane_City_Parks_and_Sporting_Complexes_1');
-        map.getPane('pane_City_Parks_and_Sporting_Complexes_1').style.zIndex = 401;
-        map.getPane('pane_City_Parks_and_Sporting_Complexes_1').style['mix-blend-mode'] = 'normal';
-        var layer_City_Parks_and_Sporting_Complexes_1 = new L.geoJson(json_City_Parks_and_Sporting_Complexes_1, {
+        map.createPane('pane_RecreationAreas_1');
+        map.getPane('pane_RecreationAreas_1').style.zIndex = 401;
+        map.getPane('pane_RecreationAreas_1').style['mix-blend-mode'] = 'normal';
+        var layer_RecreationAreas_1 = new L.geoJson(json_RecreationAreas_1, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_City_Parks_and_Sporting_Complexes_1',
-            layerName: 'layer_City_Parks_and_Sporting_Complexes_1',
-            pane: 'pane_City_Parks_and_Sporting_Complexes_1',
-            onEachFeature: pop_City_Parks_and_Sporting_Complexes_1,
-            style: style_City_Parks_and_Sporting_Complexes_1_0,
+            dataVar: 'json_RecreationAreas_1',
+            layerName: 'layer_RecreationAreas_1',
+            pane: 'pane_RecreationAreas_1',
+            onEachFeature: pop_RecreationAreas_1,
+            style: style_RecreationAreas_1_0,
         });
-        bounds_group.addLayer(layer_City_Parks_and_Sporting_Complexes_1);
-        map.addLayer(layer_City_Parks_and_Sporting_Complexes_1);
-        function pop_Trails_and_Bikeways_2(feature, layer) {
+        bounds_group.addLayer(layer_RecreationAreas_1);
+        map.addLayer(layer_RecreationAreas_1);
+        function pop_TrailsandBikeways_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">Trail_Name</th>\
@@ -207,115 +228,129 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_Trails_and_Bikeways_2_0(feature) {
+        function style_TrailsandBikeways_2_0(feature) {
             switch(String(feature.properties['Difficulty'])) {
                 case 'EASIEST':
                     return {
-                pane: 'pane_Trails_and_Bikeways_2',
+                pane: 'pane_TrailsandBikeways_2',
                 opacity: 1,
-                color: 'rgba(253,212,158,1.0)',
+                color: 'rgba(0,255,34,1.0)',
                 dashArray: '',
-                lineCap: 'round',
-                lineJoin: 'round',
-                weight: 4.0,
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
                 fillOpacity: 0,
                 interactive: true,
             }
                     break;
                 case 'EASY':
                     return {
-                pane: 'pane_Trails_and_Bikeways_2',
+                pane: 'pane_TrailsandBikeways_2',
                 opacity: 1,
-                color: 'rgba(241,177,132,1.0)',
+                color: 'rgba(42,217,28,1.0)',
                 dashArray: '',
-                lineCap: 'round',
-                lineJoin: 'round',
-                weight: 4.0,
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
                 fillOpacity: 0,
                 interactive: true,
             }
                     break;
                 case 'EXRTEMELY DIFFICULT':
                     return {
-                pane: 'pane_Trails_and_Bikeways_2',
+                pane: 'pane_TrailsandBikeways_2',
                 opacity: 1,
-                color: 'rgba(229,141,105,1.0)',
+                color: 'rgba(85,179,22,1.0)',
                 dashArray: '',
-                lineCap: 'round',
-                lineJoin: 'round',
-                weight: 4.0,
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
                 fillOpacity: 0,
                 interactive: true,
             }
                     break;
                 case 'EXTREMELY DIFFICULT':
                     return {
-                pane: 'pane_Trails_and_Bikeways_2',
+                pane: 'pane_TrailsandBikeways_2',
                 opacity: 1,
-                color: 'rgba(216,106,79,1.0)',
+                color: 'rgba(128,140,17,1.0)',
                 dashArray: '',
-                lineCap: 'round',
-                lineJoin: 'round',
-                weight: 4.0,
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
                 fillOpacity: 0,
                 interactive: true,
             }
                     break;
                 case 'MORE DIFFICULT':
                     return {
-                pane: 'pane_Trails_and_Bikeways_2',
+                pane: 'pane_TrailsandBikeways_2',
                 opacity: 1,
-                color: 'rgba(204,70,52,1.0)',
+                color: 'rgba(170,102,11,1.0)',
                 dashArray: '',
-                lineCap: 'round',
-                lineJoin: 'round',
-                weight: 4.0,
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
                 fillOpacity: 0,
                 interactive: true,
             }
                     break;
                 case 'VERY DIFFICULT':
                     return {
-                pane: 'pane_Trails_and_Bikeways_2',
+                pane: 'pane_TrailsandBikeways_2',
                 opacity: 1,
-                color: 'rgba(192,35,26,1.0)',
+                color: 'rgba(213,63,5,1.0)',
                 dashArray: '',
-                lineCap: 'round',
-                lineJoin: 'round',
-                weight: 4.0,
-                fillOpacity: 0,
-                interactive: true,
-            }
-                    break;
-                default:
-                    return {
-                pane: 'pane_Trails_and_Bikeways_2',
-                opacity: 1,
-                color: 'rgba(179,0,0,1.0)',
-                dashArray: '',
-                lineCap: 'round',
-                lineJoin: 'round',
-                weight: 4.0,
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
                 fillOpacity: 0,
                 interactive: true,
             }
                     break;
             }
         }
-        map.createPane('pane_Trails_and_Bikeways_2');
-        map.getPane('pane_Trails_and_Bikeways_2').style.zIndex = 402;
-        map.getPane('pane_Trails_and_Bikeways_2').style['mix-blend-mode'] = 'normal';
-        var layer_Trails_and_Bikeways_2 = new L.geoJson(json_Trails_and_Bikeways_2, {
+        map.createPane('pane_TrailsandBikeways_2');
+        map.getPane('pane_TrailsandBikeways_2').style.zIndex = 402;
+        map.getPane('pane_TrailsandBikeways_2').style['mix-blend-mode'] = 'normal';
+        var layer_TrailsandBikeways_2 = new L.geoJson(json_TrailsandBikeways_2, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_Trails_and_Bikeways_2',
-            layerName: 'layer_Trails_and_Bikeways_2',
-            pane: 'pane_Trails_and_Bikeways_2',
-            onEachFeature: pop_Trails_and_Bikeways_2,
-            style: style_Trails_and_Bikeways_2_0,
+            dataVar: 'json_TrailsandBikeways_2',
+            layerName: 'layer_TrailsandBikeways_2',
+            pane: 'pane_TrailsandBikeways_2',
+            onEachFeature: pop_TrailsandBikeways_2,
+            style: style_TrailsandBikeways_2_0,
         });
-        bounds_group.addLayer(layer_Trails_and_Bikeways_2);
-        map.addLayer(layer_Trails_and_Bikeways_2);
+        bounds_group.addLayer(layer_TrailsandBikeways_2);
+        map.addLayer(layer_TrailsandBikeways_2);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Carson City Recreation Map</h2>';
+            };
+            title.addTo(map);
+            var abstract = new L.Control({'position':'bottomright'});
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control leaflet-bar abstract');
+                this._div.id = 'abstract'
+
+                    abstract.show();
+                    return this._div;
+                };
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = 'This map provideds information of the trails and recreation ares within Carson City, Neveda. ';
+            };
+            abstract.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Trails and Bikeways<br /><table><tr><td style="text-align: center;"><img src="legend/TrailsandBikeways_2_EASIEST0.png" /></td><td>EASIEST</td></tr><tr><td style="text-align: center;"><img src="legend/TrailsandBikeways_2_EASY1.png" /></td><td>EASY</td></tr><tr><td style="text-align: center;"><img src="legend/TrailsandBikeways_2_EXRTEMELYDIFFICULT2.png" /></td><td>EXRTEMELY DIFFICULT</td></tr><tr><td style="text-align: center;"><img src="legend/TrailsandBikeways_2_EXTREMELYDIFFICULT3.png" /></td><td>EXTREMELY DIFFICULT</td></tr><tr><td style="text-align: center;"><img src="legend/TrailsandBikeways_2_MOREDIFFICULT4.png" /></td><td>MORE DIFFICULT</td></tr><tr><td style="text-align: center;"><img src="legend/TrailsandBikeways_2_VERYDIFFICULT5.png" /></td><td>VERY DIFFICULT</td></tr></table>': layer_TrailsandBikeways_2,'Recreation Areas<br /><table><tr><td style="text-align: center;"><img src="legend/RecreationAreas_1_GOLF0.png" /></td><td>GOLF</td></tr><tr><td style="text-align: center;"><img src="legend/RecreationAreas_1_OPENSPACE1.png" /></td><td>OPEN SPACE</td></tr><tr><td style="text-align: center;"><img src="legend/RecreationAreas_1_PARK2.png" /></td><td>PARK</td></tr><tr><td style="text-align: center;"><img src="legend/RecreationAreas_1_SNPLMA3.png" /></td><td>Southern Nevada Public Land Management Act (SNPLMA)</td></tr><tr><td style="text-align: center;"><img src="legend/RecreationAreas_1_SPORT4.png" /></td><td>SPORT</td></tr></table>': layer_RecreationAreas_1,"OpenStreetMap": layer_OpenStreetMap_0,}).addTo(map);
         setBounds();
         </script>
     </body>
